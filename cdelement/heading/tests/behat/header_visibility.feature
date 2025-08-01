@@ -64,6 +64,23 @@ Feature: Check content designer header element settings
   #   Then ".chapter-elements-list li.element-item h2.element-heading.hl-center.vl-top" "css_element" should exist
   #   Then ".chapter-elements-list li.element-item a[target=_blank]" "css_element" should exist
 
+        @javascript
+  Scenario: Information displays when enabled
+    When the following config values are set as admin:
+      | searchbannerenable | 1                                                                             |
+      | searchbanner       | The search currently only finds frog-related content; we hope to fix it soon. |
+    And I search for "toads" using the header global search box
+    Then I should see "The search currently only finds frog-related content" in the ".notifywarning" "css_element"
+
+  @javascript
+  Scenario: Information does not display when not enabled
+    When the following config values are set as admin:
+      | searchbannerenable | 0                                                                             |
+      | searchbanner       | The search currently only finds frog-related content; we hope to fix it soon. |
+    And I search for "toads" using the header global search box
+    Then I should not see "The search currently only finds frog-related content"
+    And ".notifywarning" "css_element" should not exist
+
   @javascript
   Scenario: Contentdesigner: Search: Add and edit heading element title and description
     Given I am on the "Demo content" "contentdesigner activity" page logged in as admin
@@ -133,19 +150,3 @@ Feature: Check content designer header element settings
     And I click on "Content Designer" "link"
     And "Heading Description" "text" should not exist
 
-      @javascript
-  Scenario: Information displays when enabled
-    When the following config values are set as admin:
-      | searchbannerenable | 1                                                                             |
-      | searchbanner       | The search currently only finds frog-related content; we hope to fix it soon. |
-    And I search for "toads" using the header global search box
-    Then I should see "The search currently only finds frog-related content" in the ".notifywarning" "css_element"
-
-  @javascript
-  Scenario: Information does not display when not enabled
-    When the following config values are set as admin:
-      | searchbannerenable | 0                                                                             |
-      | searchbanner       | The search currently only finds frog-related content; we hope to fix it soon. |
-    And I search for "toads" using the header global search box
-    Then I should not see "The search currently only finds frog-related content"
-    And ".notifywarning" "css_element" should not exist
